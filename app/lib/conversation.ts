@@ -151,7 +151,7 @@ export function getContactUrl(domain: string) {
 }
 
 /** Where this template's own code lives, for a reader who wants it rather than a copy. */
-export const TEMPLATE_SOURCE_URL = 'https://github.com/Chuck7Chen/vibe-coding-agent-cli';
+export const TEMPLATE_SOURCE_URL = 'https://github.com/TencentEdgeOne/vibe-coding-platform';
 
 // Taking a copy of this template is a console flow, so the button is a link out
 // rather than an action this app can finish. The query string is the one the
