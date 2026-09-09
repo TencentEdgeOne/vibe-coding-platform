@@ -138,5 +138,5 @@ test('direct CLI calls route the runtime credential through one resolver', async
   assert.doesNotMatch(commandSource, /makers deploy[^\n]* -t /);
 
   const packageJson = JSON.parse(packageSource);
-  assert.equal(packageJson.dependencies['@edgeone/makers-sdk'], '0.1.0-beta.5');
+  assert.equal(packageJson.dependencies['@edgeone/makers-sdk'], '0.1.0');
 });
