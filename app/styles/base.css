@@ -1,0 +1,135 @@
+/* ============================================================
+   Base — reset, document shell and shared primitives.
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+/* This is a single-screen tool, never a scrolling document: the page itself must
+   not scroll, otherwise the shell can be dragged down past its own layout. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  overscroll-behavior: none;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-app);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+textarea,
+input,
+a {
+  font: inherit;
+}
+
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+[role='tab']:not([disabled]),
+[role='switch']:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+textarea::placeholder,
+input::placeholder {
+  opacity: 1;
+}
+
+/* Full-height app shell. dvh tracks the visible viewport, so a mobile URL bar
+   cannot leave a strip of empty page scrolling below the layout. */
+.app-shell {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Scrollbars stay invisible until the surface is pointed at or focused, so a
+   resting panel reads as a flat sheet rather than a scroll region. */
+.scroll-quiet {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.scroll-quiet:hover,
+.scroll-quiet:focus-within {
+  scrollbar-color: color-mix(in srgb, var(--n-500) 35%, transparent) transparent;
+}
+
+.scroll-quiet::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-quiet::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-quiet::-webkit-scrollbar-thumb {
+  border-radius: var(--r-full);
+  background: transparent;
+}
+
+.scroll-quiet:hover::-webkit-scrollbar-thumb,
+.scroll-quiet:focus-within::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--n-500) 35%, transparent);
+}
+
+.scroll-quiet::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--n-500) 55%, transparent);
+}
+
+/* Capability chip — one visual, five hues, so a capability reads the same way
+   everywhere the file tree labels one. */
+.capability-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  border-radius: var(--r-xs);
+  padding: 1px 4px;
+  background: var(--cap-config-soft);
+  color: var(--cap-config);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+.capability-badge[data-capability='agent'] {
+  background: var(--cap-agent-soft);
+  color: var(--cap-agent);
+}
+
+.capability-badge[data-capability='cloud-function'] {
+  background: var(--cap-api-soft);
+  color: var(--cap-api);
+}
+
+.capability-badge[data-capability='edge-function'] {
+  background: var(--cap-edge-soft);
+  color: var(--cap-edge);
+}
+
+.capability-badge[data-capability='middleware'] {
+  background: var(--cap-middleware-soft);
+  color: var(--cap-middleware);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

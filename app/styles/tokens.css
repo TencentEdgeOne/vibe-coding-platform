@@ -1,0 +1,156 @@
+/* ============================================================
+   Design tokens — the single source of truth for colour, shape,
+   elevation, motion and type. Surface stylesheets consume these
+   and must not introduce raw hex values or one-off durations.
+   ============================================================ */
+
+:root {
+  /* ---- Neutral ramp ------------------------------------- */
+  --n-0: #ffffff;
+  --n-25: #fafbfc;
+  --n-50: #f7f8fa;
+  --n-75: #f4f6fa;
+  --n-100: #f0f1f3;
+  --n-150: #e8eaee;
+  --n-200: #e0e3e8;
+  --n-300: #d6dae1;
+  --n-400: #b0b5bd;
+  --n-500: #8a929e;
+  --n-600: #6b7280;
+  --n-700: #4d5561;
+  --n-800: #343941;
+  --n-900: #17181c;
+
+  /* ---- Brand: the interactive blue ----------------------- */
+  --brand: #2f6bff;
+  --brand-deep: #0052d9;
+  --brand-soft: rgba(47, 107, 255, 0.08);
+  --brand-ring: rgba(47, 107, 255, 0.12);
+
+  /* ---- Capability hues -----------------------------------
+     One hue per Makers capability so a colour means the same
+     thing everywhere the file tree shows one. They stay close
+     to the brand blue: this is a taxonomy, not a second theme. */
+  --cap-agent: #2f6bff;
+  --cap-agent-soft: #e7efff;
+  --cap-api: #0d6ba8;
+  --cap-api-soft: #e2eff8;
+  --cap-edge: #0d8a94;
+  --cap-edge-soft: #e2f4f5;
+  --cap-middleware: #8a5b00;
+  --cap-middleware-soft: #fff3d6;
+  --cap-config: #626b78;
+  --cap-config-soft: #eceff3;
+
+  /* ---- Code surface --------------------------------------
+     The files panel reads as an editor rather than as app
+     chrome, so its ink and paper come from the same GitHub
+     light palette the syntax theme uses instead of being
+     borrowed from the neutral ramp above. Named here so the
+     panel holds no raw hex of its own; the Prism theme keeps
+     literal colours because it is handed to a library that
+     wants colour strings, not custom properties. */
+  --code-ink: #24292f;
+  --code-paper: var(--n-0);
+  --code-rail: #f8f9fb;
+  --code-gutter: #a1a7b0;
+  --code-selected-text: #174ea6;
+  --code-icon: #9aa1ad;
+  --code-icon-folder: #788391;
+  --code-icon-folder-open: #5f6f82;
+  --code-subtle: #7a8492;
+
+  /* ---- Status ------------------------------------------- */
+  --success: #168353;
+  --success-soft: #f6fcf8;
+  --warn: #a66b15;
+  --warn-soft: #fffaf2;
+  --danger: #d3454b;
+  --danger-text: #a63940;
+  --danger-soft: #fff8f8;
+  --danger-border: #f0d6d8;
+  --link: #2463c5;
+
+  /* ---- Shape -------------------------------------------- */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-full: 999px;
+
+  /* ---- Elevation ---------------------------------------- */
+  --shadow-1: 0 1px 2px rgba(17, 24, 39, 0.07);
+  --shadow-2: 0 4px 14px -6px rgba(17, 24, 39, 0.16);
+  --shadow-3: 0 26px 70px rgba(17, 18, 22, 0.3);
+  --shadow-device: 0 0 36px rgba(17, 18, 22, 0.12);
+  --hairline-inset: inset 0 0 0 1px rgba(25, 28, 33, 0.08);
+  --focus-ring: 0 0 0 3px var(--brand-ring);
+
+  /* ---- Scrims ------------------------------------------- */
+  --overlay: rgba(15, 17, 23, 0.42);
+  /* Paired with a blur wherever it is used, so it only has to soften the page
+     rather than hide it. Opaque enough to carry a panel, sheer enough that the
+     preview underneath still reads as a page that is waiting. */
+  --scrim: rgba(250, 251, 252, 0.62);
+
+  /* ---- Motion ------------------------------------------- */
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-slow: 320ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- Type --------------------------------------------- */
+  --fs-2xs: 10px;
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-lg: 15px;
+  --fs-xl: 19px;
+  /* --font-mono is owned by the Tailwind theme block in globals.css so the
+     utility layer and these surfaces resolve to the same stack. */
+  --font-app:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Microsoft YaHei',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  /* ---- shadcn/ui contract -------------------------------
+     Mapped onto the ramp above so the utility layer and the
+     handwritten surfaces cannot drift apart. */
+  --radius: 0.625rem;
+
+  --background: var(--n-0);
+  --foreground: var(--n-900);
+
+  --card: var(--n-0);
+  --card-foreground: var(--n-900);
+  --popover: var(--n-0);
+  --popover-foreground: var(--n-900);
+
+  --primary: var(--brand);
+  --primary-foreground: var(--n-0);
+
+  --secondary: #eef0f3;
+  --secondary-foreground: #454b56;
+
+  --muted: var(--n-75);
+  --muted-foreground: var(--n-500);
+
+  --accent: var(--brand-soft);
+  --accent-foreground: var(--brand-deep);
+
+  --destructive: var(--danger);
+
+  --border: #e6e8ec;
+  --input: #e6e8ec;
+  --ring: var(--brand);
+
+  /* Legacy alias kept because the file panel styles the truncation
+     pill with color-mix() against it. */
+  --gold: var(--warn);
+}

@@ -1,0 +1,285 @@
+/* ============================================================
+   Site header — leaving the project and the brand lockup on the
+   left; every session action on the right, read as two groups
+   either side of a hairline: utilities first, then what ships.
+   ============================================================ */
+
+.site-topbar {
+  position: relative;
+  z-index: 50;
+  display: flex;
+  height: 44px;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--n-150);
+  background: var(--n-0);
+  padding: 0 14px;
+}
+
+/* An icon button says nothing on its own, and a disabled one says even less
+   about why. The hint rides on a wrapper rather than the control: browsers
+   drop hover, and native titles, on a disabled button. */
+.site-hint {
+  position: relative;
+  display: inline-flex;
+}
+
+.site-hint::after {
+  content: attr(data-hint);
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: max-content;
+  max-width: 220px;
+  border-radius: var(--r-sm);
+  background: var(--n-900);
+  padding: 5px 8px;
+  color: var(--n-0);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition:
+    opacity var(--t-fast) ease,
+    transform var(--t-fast) ease;
+  pointer-events: none;
+  box-shadow: var(--shadow-2);
+}
+
+/* Anchored buttons near the left edge open the other way, or the hint runs
+   off the window. */
+.site-hint.is-start::after {
+  right: auto;
+  left: 0;
+}
+
+.site-hint:not([data-hint])::after,
+.site-hint[data-hint='']::after {
+  content: none;
+}
+
+.site-hint:hover::after,
+.site-hint:focus-within::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.site-hint:has(:disabled) {
+  cursor: not-allowed;
+}
+
+.site-brand-cluster {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.site-brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0;
+  color: var(--n-900);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Two editions of this template carry the same wordmark, so the pill beside it
+   is the only thing on screen that says which one is running. It never gives up
+   its width: the wordmark next to it can be inferred from the page, this
+   cannot. */
+.site-brand-tag {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
+  border-radius: var(--r-full);
+  background: var(--brand-soft);
+  padding: 3px 8px;
+  color: var(--brand-deep);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Two clusters: what you take out of the session, then what you send
+   outside it. Whitespace does the separating — a rule between buttons that
+   already carry their own borders just adds another line to read. */
+.site-topbar-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 16px;
+}
+
+.site-topbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-language {
+  margin-right: 2px;
+}
+
+.site-lang-toggle {
+  display: inline-flex;
+  height: 28px;
+  align-items: stretch;
+  border: 1px solid var(--n-150);
+  border-radius: var(--r-md);
+  background: var(--n-50);
+  padding: 2px;
+}
+
+.site-lang-option {
+  display: inline-flex;
+  min-width: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  padding: 0 8px;
+  color: var(--n-500);
+  font-size: var(--fs-xs);
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  transition:
+    background var(--t-fast) ease,
+    color var(--t-fast) ease,
+    box-shadow var(--t-fast) ease;
+}
+
+.site-lang-option:hover:not(.is-active) {
+  color: var(--n-800);
+}
+
+.site-lang-option.is-active {
+  background: var(--n-0);
+  color: var(--n-900);
+  box-shadow: var(--shadow-1);
+}
+
+.site-icon-button,
+.site-primary-button,
+.site-accent-button {
+  display: inline-flex;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--n-150);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+  transition:
+    background var(--t-base) ease,
+    border-color var(--t-base) ease,
+    color var(--t-base) ease,
+    transform var(--t-fast) ease;
+}
+
+.site-icon-button {
+  width: 28px;
+  flex: 0 0 28px;
+  color: var(--n-800);
+}
+
+.site-icon-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Leaving the project sits next to the wordmark rather than among the
+   actions, so it carries no box of its own until the pointer is on it. */
+.site-icon-button.is-ghost {
+  border-color: transparent;
+  color: var(--n-600);
+}
+
+.site-icon-button.is-ghost:hover:not(:disabled) {
+  border-color: transparent;
+  color: var(--n-900);
+}
+
+/* Taking a copy of the template is what this bar is for, so it is the only
+   filled button in it. Text alone: a rocket here read as publishing the
+   user's project, which is the panel icon's job. */
+.site-primary-button {
+  border-color: transparent;
+  background: var(--brand);
+  padding: 0 12px;
+  color: var(--n-0);
+  font-weight: 600;
+}
+
+/* The contact call to action stays findable without competing with the
+   composer for the eye: brand colour, but no fill. */
+.site-accent-button {
+  border-color: color-mix(in srgb, var(--brand) 26%, transparent);
+  background: transparent;
+  padding: 0 12px;
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.site-icon-button:hover:not(:disabled) {
+  border-color: var(--n-300);
+  background: var(--n-50);
+}
+
+.site-primary-button:hover:not(:disabled) {
+  background: var(--brand-deep);
+}
+
+.site-accent-button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--brand) 45%, transparent);
+  background: var(--brand-soft);
+  color: var(--brand-deep);
+}
+
+/* Pointer events pass through to the hint wrapper, which is what keeps a
+   disabled button able to explain itself. */
+.site-icon-button:disabled,
+.site-primary-button:disabled,
+.site-accent-button:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.site-icon-button:active,
+.site-primary-button:active,
+.site-accent-button:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 640px) {
+  .site-topbar {
+    height: 40px;
+    flex-basis: 40px;
+    padding: 0 10px;
+  }
+
+  /* Every action survives the narrow bar; the wordmark is the one thing
+     here that can be read from context, so it yields the space. */
+  .site-topbar-actions {
+    gap: 10px;
+  }
+
+  .site-brand {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .site-language {
+    display: none;
+  }
+}

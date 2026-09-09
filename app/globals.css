@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+
+/* Surfaces are split by area and each selector is defined exactly once. They
+   stay outside Tailwind's cascade layers on purpose: unlayered CSS outranks
+   @layer utilities, which is what lets the handwritten chrome override the
+   shadcn defaults without !important. */
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/header.css';
+@import './styles/home.css';
+@import './styles/conversation.css';
+@import './styles/workspace.css';
+@import './styles/dialog.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-success: var(--success);
+  --color-gold: var(--gold);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}

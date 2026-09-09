@@ -1,0 +1,87 @@
+{
+  "bakedWith": {
+    "node": "v24.19.0"
+  },
+  "templates": [
+    {
+      "id": "astro",
+      "ref": "astro.md",
+      "command": "npm create astro@latest . -- --yes --template minimal --install --no-git",
+      "files": 9,
+      "bytes": 201500,
+      "bakedAt": "2026-09-07"
+    },
+    {
+      "id": "deepagents",
+      "ref": "makers-agents/references/node-frameworks/deepagents.md",
+      "command": "npm install deepagents@1.13.3 @langchain/core@^1.2.9 @langchain/langgraph@^1.4.14 @langchain/langgraph-checkpoint@^1.1.5 @langchain/langgraph-sdk@^1.9.23 @langchain/openai@1.5.8 langchain@^1.5.10 langsmith@^0.9.0 zod@^4.3.6",
+      "files": 5,
+      "bytes": 26100,
+      "bakedAt": "2026-09-09"
+    },
+    {
+      "id": "langgraph",
+      "ref": "makers-agents/references/node-frameworks/langgraph.md",
+      "command": "npm install @langchain/langgraph@^1.4.14 @langchain/openai@1.5.8 @langchain/core@^1.2.9 zod@^4.3.6",
+      "files": 5,
+      "bytes": 17522,
+      "bakedAt": "2026-09-09"
+    },
+    {
+      "id": "nextjs",
+      "ref": "nextjs.md",
+      "command": "npx create-next-app@15 . --typescript --tailwind --app --eslint --use-npm --yes",
+      "files": 18,
+      "bytes": 256760,
+      "bakedAt": "2026-09-07"
+    },
+    {
+      "id": "nuxt",
+      "ref": "nuxt.md",
+      "command": "npx nuxi@latest init . --template minimal --packageManager npm --no-gitInit --force",
+      "files": 9,
+      "bytes": 395838,
+      "bakedAt": "2026-09-07"
+    },
+    {
+      "id": "react-router",
+      "ref": "react-router.md",
+      "command": "npx create-react-router@latest . --yes --no-git-init --install",
+      "files": 17,
+      "bytes": 206900,
+      "bakedAt": "2026-09-07"
+    },
+    {
+      "id": "sveltekit",
+      "ref": "sveltekit.md",
+      "command": "npx sv create . --template minimal --types ts --no-add-ons --install npm",
+      "files": 14,
+      "bytes": 81481,
+      "bakedAt": "2026-09-07"
+    },
+    {
+      "id": "tanstack-start",
+      "ref": "tanstack-start.md",
+      "command": "npx @tanstack/cli@latest create . --framework react --non-interactive --no-git --no-intent",
+      "files": 17,
+      "bytes": 215479,
+      "bakedAt": "2026-09-07"
+    },
+    {
+      "id": "vike",
+      "ref": "vike.md",
+      "command": "npm create vike@latest . -- --react --edgeone --skip-git",
+      "files": 25,
+      "bytes": 20634,
+      "bakedAt": "2026-09-08"
+    },
+    {
+      "id": "vite-spa",
+      "ref": "vite-spa.md",
+      "command": "npm create vite@latest . -- --template react-ts",
+      "files": 18,
+      "bytes": 53528,
+      "bakedAt": "2026-09-07"
+    }
+  ]
+}

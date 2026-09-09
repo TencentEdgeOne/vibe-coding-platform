@@ -1,0 +1,363 @@
+/* ============================================================
+   Landing — the first screen. Everything here exists to say
+   what this agent does with the platform, not just "type a
+   prompt": the ribbon names the four phases a real run goes
+   through, and the cards below the composer name the platform
+   pieces the generated project is built out of. The two say
+   different things, and neither repeats the other.
+   ============================================================ */
+
+/* The landing hero is the one place that may outgrow a short window, so it takes
+   the scrolling instead of handing it back to the page. */
+.home-stage {
+  display: flex;
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 40px 24px 48px;
+  text-align: center;
+}
+
+.home-inner {
+  width: 100%;
+  max-width: 820px;
+}
+
+/* ---- Headline ---------------------------------------------------------- */
+
+.home-title {
+  margin: 0;
+  color: var(--n-900);
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+
+.home-title-accent {
+  color: var(--brand);
+}
+
+.home-subtitle {
+  margin: 12px 0 0;
+  color: var(--n-600);
+  font-size: var(--fs-lg);
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+/* ---- Composer ---------------------------------------------------------- */
+
+.home-composer {
+  margin-top: 28px;
+  border: 1px solid var(--n-150);
+  border-radius: var(--r-lg);
+  background: var(--n-0);
+  padding: 14px;
+  text-align: left;
+  box-shadow: var(--shadow-1);
+  transition:
+    border-color var(--t-base) ease,
+    box-shadow var(--t-base) ease;
+}
+
+.home-composer:focus-within {
+  border-color: var(--brand);
+  box-shadow: var(--focus-ring);
+}
+
+.home-composer textarea {
+  display: block;
+  width: 100%;
+  min-height: 96px;
+  max-height: 220px;
+  resize: none;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  padding: 2px;
+  color: var(--foreground);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.home-composer textarea::placeholder {
+  color: var(--n-400);
+}
+
+.home-composer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  row-gap: 12px;
+  margin-top: 12px;
+  border-top: 1px solid var(--n-100);
+  padding-top: 12px;
+}
+
+/* The chips take a row of their own rather than competing with the controls for
+   what is left of one. Sharing capped them near 530px, which the English copy
+   overran into a second row while the Chinese fit — a split no wording survives
+   for long, since every new locale re-rolls it. */
+/* One row, always. Wrapping was the previous answer and it made the row's
+   height depend on the copy: the English set spilled onto a second row while
+   the Chinese fit, so the panel changed height when the language did. Chips
+   shrink and ellipsize instead — a clipped chip still shows what it offers,
+   and the layout stops being something wording has to be trimmed to fit. */
+.home-examples {
+  display: flex;
+  min-width: 0;
+  flex: 1 0 100%;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+/* Starts the second row, so an auto margin carries it and the submit button to
+   the right edge instead of leaving them stranded under the chips. */
+.home-examples + * {
+  margin-left: auto;
+}
+
+.home-example {
+  display: inline-flex;
+  height: 26px;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--n-150);
+  border-radius: var(--r-full);
+  background: var(--n-0);
+  padding: 0 11px;
+  color: var(--n-600);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  transition:
+    border-color var(--t-fast) ease,
+    background var(--t-fast) ease,
+    color var(--t-fast) ease;
+}
+
+/* The chip is a flex container, which cannot ellipsize its own text — this is
+   the block box that can. */
+.home-example-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-example:hover {
+  border-color: color-mix(in srgb, var(--brand) 40%, transparent);
+  background: var(--brand-soft);
+  color: var(--brand-deep);
+}
+
+.home-submit {
+  display: inline-flex;
+  height: 32px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--r-md);
+  background: var(--brand);
+  padding: 0 16px;
+  color: var(--n-0);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  transition:
+    background var(--t-fast) ease,
+    box-shadow var(--t-fast) ease,
+    opacity var(--t-fast) ease;
+}
+
+.home-submit svg {
+  width: 14px;
+  height: 14px;
+}
+
+.home-submit:hover:not(:disabled) {
+  background: var(--brand-deep);
+  box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--brand) 80%, transparent);
+}
+
+.home-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.home-submit-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid color-mix(in srgb, var(--n-0) 40%, transparent);
+  border-top-color: var(--n-0);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+/* ---- Capability panel ---------------------------------------------------
+   One cell per phase the ribbon names, in the same order and under the same
+   ordinal, saying what the platform does at each. Laid out the way the
+   product's own solution pages lay out a feature grid: square cells on white,
+   divided by hairlines.
+
+   Two columns rather than four, even though the ribbon runs four across: a
+   quarter of this width leaves the descriptions too narrow to read, and the
+   ordinals already carry the order that the single row would have carried
+   positionally.
+
+   This is the one block on the screen that cannot be acted on, so it gives up
+   every mark the rest of the page spends on controls — no box of its own per
+   item, no lift, no radius. Four cells of one panel read as a spec sheet; four
+   rounded white cards with a shadow read as four buttons. */
+
+/* Square, not rounded: a radius would turn the grid back into a card, and this
+   is a reference table. The hairlines do all of the dividing. */
+.home-features {
+  /* The height of a title row. The icon box sets it, being taller than the
+     title's own line box, so that is the figure the ordinal has to match rather
+     than the text's. All three read it from here so none can drift. */
+  --feature-title-line: 18px;
+
+  display: grid;
+  margin: 24px 0 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--n-150);
+  background: var(--n-0);
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.home-feature {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+/* What makes a cell read as the phase it belongs to rather than as one of four
+   unordered claims. Leads the row because the sequence is the first thing to
+   pick up; the title's own icon then says which capability serves that phase.
+
+   Set a step above the ribbon's old 10px, where it read as a footnote on the
+   title rather than as the thing numbering it, but kept under the title's own
+   size: level with the title the two compete, and the number is a marker on the
+   phase, not half of its name. Tracking scales the other way — 0.1em was
+   opening up 10px digits and would pull this pair apart.
+
+   Carries the title's line box rather than its own, because `align-items`
+   aligns boxes: two sizes with proportional line heights make two boxes, and
+   flex-start would leave the digits riding above the text they number. */
+.home-feature-index {
+  color: var(--brand);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: var(--feature-title-line);
+}
+
+/* Hairlines only between cells — the panel draws its own outer edge. */
+.home-feature:nth-child(odd) {
+  border-right: 1px solid var(--n-150);
+}
+
+.home-feature:nth-child(-n + 2) {
+  border-bottom: 1px solid var(--n-150);
+}
+
+/* A bare glyph rather than a filled square: the tinted chip was the last thing
+   here still shaped like something you press.
+
+   The box is deliberately larger than any glyph in it and centres them, because
+   each icon is sized individually in `home-stage.tsx` to match the others
+   optically. Do not re-add a `svg { width }` rule here — CSS beats the width
+   attribute lucide's `size` prop writes, and it would flatten them all back to
+   one size. */
+.home-feature-icon {
+  display: grid;
+  width: var(--feature-title-line);
+  height: var(--feature-title-line);
+  flex: 0 0 var(--feature-title-line);
+  place-items: center;
+  color: var(--brand);
+}
+
+.home-feature-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* The icon sits on the title line rather than leading the cell, because the
+   ordinal now holds that position. Inline-flex keeps the two on one line and
+   lets the glyph centre against the cap height instead of the line box. */
+.home-feature-copy strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--n-900);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  line-height: var(--feature-title-line);
+}
+
+/* n-600, not the n-500 a caption would take: this line carries the substance,
+   and 12px at n-500 sits under the contrast floor on white. */
+.home-feature-desc {
+  color: var(--n-600);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .home-stage {
+    padding: 28px 16px 36px;
+  }
+
+  .home-composer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Stacked, every child already owns the full width, and a 100% basis would be
+     read against the container's height instead. */
+  .home-examples {
+    flex: 0 0 auto;
+  }
+
+  .home-examples + * {
+    margin-left: 0;
+  }
+
+  .home-submit {
+    justify-content: center;
+  }
+
+  .home-features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* A single column has no column to divide, and every cell but the last now
+     needs the rule that only the first row carried. Same specificity as the
+     two-column rules above, so these have to come after them to win. */
+  .home-feature:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .home-feature:nth-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  .home-feature:not(:last-child) {
+    border-bottom: 1px solid var(--n-150);
+  }
+}

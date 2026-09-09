@@ -1,0 +1,24 @@
+node_modules
+.edgeone
+.next
+*.tsbuildinfo
+.DS_Store
+.env
+.agents
+skills-lock.json
+plan*
+.codegraph
+.tef_dist/*
+logs/
+.bake-tmp
+
+# One-off harnesses that drive a real install and build against a baked
+# template. They write to a temp dir and print findings; nothing reads them.
+.e2e-*.mts
+.e2e-tmp/
+
+# Tencent Cloud EdgeOne
+.env
+.edgeone/*
+.tef_dist/*
+  
