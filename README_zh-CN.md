@@ -30,7 +30,7 @@ Vibe Coding Platform 可以把自然语言需求转换为可运行的 Web 项目
 | `AI_GATEWAY_BASE_URL` | 是 | 网关 Base URL。使用 Makers Models 时填写 `https://ai-gateway.edgeone.link/v1`。 |
 | `AI_GATEWAY_MODEL` | 否 | 模型 ID。默认值为 `@makers/deepseek-v4-flash`（Makers 内置模型）。它同时是输入框模型选择器的初始项，以及没人手动选择时实际运行的模型。 |
 | `AI_GATEWAY_EXTRA_MODELS` | 否 | 为输入框的模型选择器追加条目，格式为逗号分隔的 `id\|展示名`（展示名可省略）。内置模型已经在列表中，这里用于填写已在控制台绑定 Key 的厂商模型，例如 `deepseek/deepseek-v4-pro\|DeepSeek V4 Pro`。所有条目共用同一套网关 Key 与 Base URL，因此它扩展的是可选模型而不是可选厂商。不在最终列表中的模型会被服务端拒绝。 |
-| `API_TOKEN` | 部署必需 | Makers 主 API Token。它只保留在 Agent Runtime 中，为直接沙箱 CLI 调用签发并注入按项目隔离的临时 tenant token。线上部署以及 Blob 等带凭证的本地后端必须配置；不填时对话和纯前端预览仍可用，但部署会失败。不要提交到仓库。 |
+| `API_TOKEN` | 是 | Makers 主 API Token。它只保留在 Agent Runtime 中，为直接沙箱 CLI 调用签发并注入按项目隔离的临时 tenant token。实时预览与部署都要带着它调用 Makers CLI，Blob 等带凭证的后端同理；不配置时模板只剩对话和纯前端静态预览。不要提交到仓库。 |
 | `MAKERS_DEPLOY_PROJECT_NAME` | 否 | 把所有会话固定到同一个 Makers 项目。建议留空：留空时预览与部署都按会话派生出独立项目名，后续轮次落在同一个站点，不同用户也不会撞名。 |
 
 本模板遵循 OpenAI 兼容标准，可以将这些变量指向 Makers Models 或任意兼容供应商。
