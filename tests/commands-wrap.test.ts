@@ -316,6 +316,48 @@ test('direct makers dev returns the captured CLI log instead of an unknown sandb
   assert.match(output, /"retryable":false/);
 });
 
+test('direct makers dev names the missing runtime key when the sandbox CLI cannot log in', async () => {
+  const commandsTool = {
+    name: 'commands',
+    description: 'run',
+    inputSchema: {},
+    handler: async () => ({
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          stdout: 'MAKERS_DEV_EXIT:1\n',
+          stderr: [
+            'You are not authenticated, and browser login is unavailable in a non-interactive environment.',
+            'Please provide a token via `-t <token>` or set the EDGEONE_PAGES_API_TOKEN environment variable.',
+          ].join('\n'),
+          exitCode: 0,
+        }),
+      }],
+    }),
+  } as unknown as ClaudeMcpTool;
+  const [wrapped] = wrapSandboxTools([commandsTool], {
+    context: {
+      env: {},
+      sandbox: {
+        files: { write: async () => {} },
+        commands: {
+          run: async () => ({ stdout: '', stderr: '', exitCode: 0 }),
+        },
+      },
+    },
+    state: projectState(),
+  });
+
+  const result = await wrapped.handler({ command: 'edgeone makers dev' }, {});
+  const output = result.content.map((item) => (
+    item && typeof item === 'object' && 'text' in item ? item.text : ''
+  )).join('\n');
+
+  assert.equal(result.isError, true);
+  assert.match(output, /Missing API_TOKEN in the Agent Runtime/);
+  assert.doesNotMatch(output, /edgeone makers dev exited with code 1/);
+});
+
 test('direct makers deploy reports durable deployment state without replacing preview', async () => {
   let received: Record<string, unknown> = {};
   let previewPublished = false;

@@ -399,6 +399,75 @@
 
 /* ---- Composer ---------------------------------------------------------- */
 
+/* Offer sits in this dock so it shares the composer's side margins. */
+.conversation-composer-dock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 18px 18px;
+}
+
+.conversation-composer-dock .conversation-composer {
+  margin: 0;
+}
+
+.deploy-offer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--n-150);
+  border-radius: var(--r-lg);
+  background: var(--card);
+}
+
+.deploy-offer-copy {
+  min-width: 0;
+  color: var(--n-900);
+  font-size: var(--fs-md);
+  line-height: 1.4;
+}
+
+.deploy-offer-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.deploy-offer-dismiss,
+.deploy-offer-accept {
+  border: 0;
+  background: transparent;
+  padding: 5px 10px;
+  font-size: var(--fs-md);
+  line-height: 1.2;
+}
+
+.deploy-offer-dismiss {
+  color: var(--n-600);
+  border-radius: var(--r-sm);
+}
+
+.deploy-offer-dismiss:hover,
+.deploy-offer-dismiss:focus-visible {
+  background: var(--n-50);
+  color: var(--n-900);
+}
+
+.deploy-offer-accept {
+  border-radius: var(--r-md);
+  background: var(--brand);
+  color: var(--n-0);
+  font-weight: 600;
+}
+
+.deploy-offer-accept:hover,
+.deploy-offer-accept:focus-visible {
+  background: var(--brand-deep);
+}
+
 .conversation-composer {
   display: grid;
   position: relative;
@@ -596,8 +665,17 @@
     padding: 18px 14px 24px;
   }
 
+  .conversation-composer-dock,
   .conversation-composer {
     margin: 10px 12px 14px;
+  }
+
+  .conversation-composer-dock .conversation-composer {
+    margin: 0;
+  }
+
+  .deploy-offer {
+    flex-wrap: wrap;
   }
 }
 

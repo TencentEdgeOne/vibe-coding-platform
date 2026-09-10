@@ -70,6 +70,12 @@ type ConversationCopy = {
   linkCopied: string;
 };
 
+export type DeployOfferCopy = {
+  prompt: string;
+  deploy: string;
+  dismiss: string;
+};
+
 function actionLabel(action: ToolAction, copy: ConversationCopy) {
   return copy.toolActions[action];
 }
@@ -354,6 +360,9 @@ export function AgentConversation({
   onInputChange,
   onSubmit,
   onStop,
+  deployOffer,
+  onDeployOffer,
+  onDismissDeployOffer,
 }: {
   messages: ConversationMessage[];
   input: string;
@@ -367,6 +376,9 @@ export function AgentConversation({
   onInputChange: (value: string) => void;
   onSubmit: () => void;
   onStop: () => void;
+  deployOffer?: DeployOfferCopy | null;
+  onDeployOffer?: () => void;
+  onDismissDeployOffer?: () => void;
 }) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const followOutputRef = useRef(true);
@@ -409,6 +421,28 @@ export function AgentConversation({
           ))}
         </div>
       </div>
+      <div className="conversation-composer-dock">
+        {deployOffer && (
+          <div className="deploy-offer" role="status">
+            <span className="deploy-offer-copy">{deployOffer.prompt}</span>
+            <div className="deploy-offer-actions">
+              <button
+                type="button"
+                className="deploy-offer-dismiss"
+                onClick={onDismissDeployOffer}
+              >
+                {deployOffer.dismiss}
+              </button>
+              <button
+                type="button"
+                className="deploy-offer-accept"
+                onClick={onDeployOffer}
+              >
+                {deployOffer.deploy}
+              </button>
+            </div>
+          </div>
+        )}
       <form onSubmit={submit} className="conversation-composer">
         <textarea
           value={input}
@@ -441,6 +475,7 @@ export function AgentConversation({
           </button>
         )}
       </form>
+      </div>
     </div>
   );
 }

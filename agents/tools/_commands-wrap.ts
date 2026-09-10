@@ -19,6 +19,7 @@ import {
 import { resolveMakersProjectName } from '../project/_makers-deploy.ts';
 import {
   buildSandboxMakersEnv,
+  describeMissingMakersRuntimeToken,
   resolveMakersMasterToken,
   resolveSandboxMakersToken,
 } from '../project/_makers-token.ts';
@@ -433,7 +434,8 @@ export function wrapSandboxTools(
             return {
               ...appendText(result, JSON.stringify({
                 status: 'error',
-                error: `edgeone makers dev exited with code ${devExitCode}.`,
+                error: describeMissingMakersRuntimeToken(makersOutput)
+                  || `edgeone makers dev exited with code ${devExitCode}.`,
                 exitCode: devExitCode,
               })),
               isError: true,

@@ -196,14 +196,10 @@ test('conversationExportFilename includes a short conversation id and timestamp'
   assert.equal(filename, 'vibe-coding-conversation-abcdefgh-2026-08-17T12-34-56-789Z.jsonl');
 });
 
-test('dev-only export button sits with the project actions and is gated by NODE_ENV', async () => {
+test('workspace topbar does not show the conversation export control', async () => {
   const workspace = await readFile('app/features/workspace/workspace-screen.tsx', 'utf8');
   const header = await readFile('app/features/workspace/components/site-header.tsx', 'utf8');
-  assert.match(workspace, /\{process\.env\.NODE_ENV === 'development' && \(/);
-  assert.match(workspace, /fetchConversationTranscript\(conversationId\)/);
-  assert.match(workspace, /data-tooltip=\{exportHint\}/);
-  assert.match(workspace, /t\.workspace\.exportTranscript/);
-  assert.doesNotMatch(workspace, /FileJson/);
-  // The bar above the conversation carries nothing session-specific any more.
+  assert.doesNotMatch(workspace, /handleExportTranscript|exportHint|exportTranscript/);
+  assert.doesNotMatch(workspace, /fetchConversationTranscript|ScrollText/);
   assert.doesNotMatch(header, /exportTranscript|downloadSource/);
 });

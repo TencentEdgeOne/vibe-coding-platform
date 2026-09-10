@@ -170,6 +170,24 @@ test('a publish reads as one row in the transcript, whoever started it', () => {
   );
 });
 
+test('publish is offered above the composer after a finished project turn', async () => {
+  const [screen, conversation, styles, i18n] = await Promise.all([
+    readFile('app/features/workspace/workspace-screen.tsx', 'utf8'),
+    readFile('app/components/agent-conversation.tsx', 'utf8'),
+    readFile('app/styles/conversation.css', 'utf8'),
+    readFile('app/i18n.ts', 'utf8'),
+  ]);
+
+  assert.match(screen, /resolveDeployOffer/);
+  assert.match(screen, /deployOffer=\{deployOffer\}/);
+  assert.match(screen, /onDeployOffer=\{handleDeployProject\}/);
+  assert.match(conversation, /className="deploy-offer"/);
+  assert.match(conversation, /className="conversation-composer-dock"/);
+  assert.match(styles, /\.deploy-offer/);
+  assert.match(i18n, /deployOfferAgain: '项目有更新，要重新部署吗？'/);
+  assert.match(i18n, /deployOfferAgain: 'The project has updates. Deploy again\?'/);
+});
+
 test('the deploy button is disabled until a project exists and nothing is running', async () => {
   const screen = await readFile('app/features/workspace/workspace-screen.tsx', 'utf8');
 
@@ -188,7 +206,7 @@ test('the deploy button is disabled until a project exists and nothing is runnin
   assert.doesNotMatch(screen, /is-running/);
   assert.match(screen, /<Rocket className="size-3\.5" \/>/);
   assert.doesNotMatch(
-    screen.slice(screen.indexOf('handleDeployProject'), screen.indexOf('handleExportTranscript')),
+    screen.slice(screen.indexOf('handleDeployProject'), screen.indexOf('handleDownload')),
     /workspace-icon-spinner/,
   );
   // An icon says nothing on its own, and a disabled one says even less about
@@ -214,7 +232,7 @@ test('the header ships the template, the panel ships the project', async () => {
   assert.match(header, /href=\{templateSourceUrl\}/);
   assert.doesNotMatch(header, /canDeploy|onDeploy|onDownload|onExportTranscript/);
   assert.match(screen, /onClick=\{handleDeployProject\}/);
-  assert.match(screen, /onClick=\{handleExportTranscript\}/);
+  assert.doesNotMatch(screen, /onClick=\{handleExportTranscript\}/);
   assert.match(screen, /onClick=\{\(\) => void handleDownload\(\)\}/);
 });
 

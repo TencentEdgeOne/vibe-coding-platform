@@ -158,7 +158,7 @@ export const TEMPLATE_SOURCE_URL = 'https://github.com/TencentEdgeOne/vibe-codin
 // README badge uses — it is what tells the console which template to open — and
 // the host splits the same way the contact URL does, because the two consoles are
 // separate deployments and neither can sign in the other's accounts.
-const TEMPLATE_DEPLOY_QUERY = 'template=vibe-coding-agent&from=within&fromAgent=1&agentLang=typescript';
+const TEMPLATE_DEPLOY_QUERY = 'template=vibe-coding-agent-platform&from=within&fromAgent=1&agentLang=typescript';
 const EDGEONE_AI_TEMPLATE_DEPLOY_URL = `https://edgeone.ai/makers/new?${TEMPLATE_DEPLOY_QUERY}`;
 const TENCENT_CLOUD_TEMPLATE_DEPLOY_URL = `https://console.cloud.tencent.com/edgeone/makers/new?${TEMPLATE_DEPLOY_QUERY}`;
 

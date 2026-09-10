@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
   buildSandboxMakersEnv,
+  describeMissingMakersRuntimeToken,
   ensureMakersTenantId,
   resolveMakersMasterToken,
   resolveSandboxMakersToken,
@@ -75,6 +76,17 @@ test('token issue failures survive the activity scrubber', async () => {
   for (const message of messages) {
     assert.doesNotMatch(message, /token\s*[:=]/i);
   }
+});
+
+test('a sandbox CLI login failure names the runtime key, not a browser login', () => {
+  const rewritten = describeMissingMakersRuntimeToken(
+    'You are not authenticated, and browser login is unavailable in a non-interactive environment.\n'
+    + 'Please provide a token via `-t <token>` or set the EDGEONE_PAGES_API_TOKEN environment variable.',
+  );
+
+  assert.match(rewritten, /Missing API_TOKEN in the Agent Runtime/);
+  assert.doesNotMatch(rewritten, /token\s*[:=]/i);
+  assert.equal(describeMissingMakersRuntimeToken('edgeone makers dev bound port 8090'), '');
 });
 
 // The master credential is the one thing the sandbox must never hold: it is

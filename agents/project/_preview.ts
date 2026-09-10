@@ -31,6 +31,7 @@ import { assertMakersProjectCompatible } from './_makers-compat.ts';
 import { resolveMakersProjectName } from './_makers-deploy.ts';
 import {
   buildSandboxMakersEnv,
+  describeMissingMakersRuntimeToken,
   resolveMakersMasterToken,
   resolveSandboxMakersToken,
 } from './_makers-token.ts';
@@ -171,7 +172,9 @@ export async function startPreviewServer(
   ) {
     const failure = isEdgeoneCliUnavailable(startOutput)
       ? `${MAKERS_CLI_UNAVAILABLE_ERROR_CODE}: ${MAKERS_CLI_UNAVAILABLE_MESSAGE}`
-      : startOutput || 'Failed to start edgeone makers dev.';
+      : describeMissingMakersRuntimeToken(startOutput)
+        || startOutput
+        || 'Failed to start edgeone makers dev.';
     throw new Error(
       redactSecret(
         failure,

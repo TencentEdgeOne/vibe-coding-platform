@@ -249,3 +249,102 @@ export function presentToolActivity(
   }
   return { action: 'Run command', target: target || shortToolName(activity.name) };
 }
+
+/**
+ * When the composer should offer a production deploy.
+ *
+ * The topbar rocket can start a deploy at any idle moment. A short prompt also
+ * appears above the input after a finished project turn — not while the agent
+ * is busy, not after a successful or failed deploy of that same turn, and not
+ * after a pure Q&A. A failed deploy already has its own row in the stream.
+ */
+
+export type DeployOfferKind = 'first' | 'again';
+
+export type DeployOfferActivity = {
+  kind?: string;
+  status?: string;
+  name?: string;
+  inputSummary?: string;
+};
+
+export type DeployOfferMessage = {
+  id?: string;
+  role: string;
+  status?: string;
+  activities?: DeployOfferActivity[];
+};
+
+export function isDeployProjectActivity(activity: DeployOfferActivity) {
+  if (activity.kind !== 'tool' || !activity.name) return false;
+  return presentToolActivity({
+    name: activity.name,
+    inputSummary: activity.inputSummary,
+  }).action === 'Deploy project';
+}
+
+export function lastFinishedAssistant<T extends DeployOfferMessage>(messages: readonly T[]) {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const item = messages[index];
+    if (item.role === 'assistant' && item.status && item.status !== 'running') {
+      return item;
+    }
+  }
+  return undefined;
+}
+
+function activitiesOf(message?: DeployOfferMessage) {
+  return message?.activities ?? [];
+}
+
+function hasSuccessfulDeploy(activities: readonly DeployOfferActivity[]) {
+  return activities.some((activity) => (
+    isDeployProjectActivity(activity) && activity.status === 'completed'
+  ));
+}
+
+function hasFailedDeploy(activities: readonly DeployOfferActivity[]) {
+  return activities.some((activity) => (
+    isDeployProjectActivity(activity)
+    && (activity.status === 'failed' || activity.status === 'stopped')
+  ));
+}
+
+function usedDeployTool(activities: readonly DeployOfferActivity[]) {
+  return activities.some((activity) => isDeployProjectActivity(activity));
+}
+
+function touchedProject(activities: readonly DeployOfferActivity[]) {
+  return activities.some((activity) => (
+    activity.kind === 'tool' && !isDeployProjectActivity(activity)
+  ));
+}
+
+export function resolveDeployOffer(
+  messages: readonly DeployOfferMessage[],
+  options: {
+    canDownload: boolean;
+    loading: boolean;
+    hasLiveDeployment?: boolean;
+  },
+): DeployOfferKind | null {
+  if (options.loading || !options.canDownload) return null;
+
+  const last = lastFinishedAssistant(messages);
+  if (!last || last.status !== 'done') return null;
+
+  const lastActivities = activitiesOf(last);
+  if (hasSuccessfulDeploy(lastActivities)) return null;
+  if (hasFailedDeploy(lastActivities)) return null;
+  if (usedDeployTool(lastActivities)) return null;
+
+  const everPublished = Boolean(options.hasLiveDeployment)
+    || messages.some((message) => hasSuccessfulDeploy(activitiesOf(message)));
+  if (touchedProject(lastActivities)) return everPublished ? 'again' : 'first';
+
+  const anyTools = messages.some((message) => (
+    activitiesOf(message).some((activity) => activity.kind === 'tool')
+  ));
+  if (!everPublished && !anyTools) return 'first';
+  return null;
+}

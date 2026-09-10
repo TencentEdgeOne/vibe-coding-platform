@@ -6,6 +6,7 @@ import { resolveMakersProjectName } from '../project/_makers-deploy.ts';
 import { startPreviewServer } from '../project/_preview.ts';
 import {
   buildSandboxMakersEnv,
+  describeMissingMakersRuntimeToken,
   resolveMakersMasterToken,
   resolveSandboxMakersToken,
 } from '../project/_makers-token.ts';
@@ -350,9 +351,10 @@ export async function runDeployPipeline(
     // "it never finished" is more use than "it did not parse". Anywhere else
     // the log won the argument — it named the cause, and the publish stopping
     // is how it ended, not why.
-    const error = timedOut && outcome.error === DEPLOY_PARSE_FAILURE
-      ? `edgeone makers deploy did not finish within ${DEPLOY_TIMEOUT_SECONDS} seconds.`
-      : outcome.error;
+    const error = describeMissingMakersRuntimeToken(stdout)
+      || (timedOut && outcome.error === DEPLOY_PARSE_FAILURE
+        ? `edgeone makers deploy did not finish within ${DEPLOY_TIMEOUT_SECONDS} seconds.`
+        : outcome.error);
     await fail(error, outcome.status === 'error' ? outcome.detail ?? '' : '');
     return;
   }

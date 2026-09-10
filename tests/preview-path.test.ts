@@ -12,6 +12,7 @@ import {
   buildPreviewProxyScript,
 } from '../shared/makers-dev.ts';
 import { agentRoutesFromListing, generatedRoutesFromListing } from '../agents/project/_preview.ts';
+import { previewDisplayPathFromPath } from '../shared/preview-display-path.ts';
 
 test('preview address bar shows the application route without the gateway prefix', async () => {
   const screen = await readFile('app/features/workspace/workspace-screen.tsx', 'utf8');
@@ -19,16 +20,30 @@ test('preview address bar shows the application route without the gateway prefix
   // The address chip renders the mirrored route (previewDisplayPath) rather than
   // the raw shareablePreviewUrl host, so the sandbox domain is never shown.
   assert.match(screen, /previewDisplayPath/);
+  assert.match(screen, /previewDisplayPathFromPath/);
   assert.doesNotMatch(
     screen,
     /shareablePreviewUrl\.replace/,
     'the address bar must not strip-and-display the sandbox host domain',
   );
-  // Public previews carry /preview/, while the address bar presents paths
-  // relative to the generated application root.
-  assert.match(screen, /function previewDisplayPathFromPath/);
-  assert.match(screen, /if \(!path\) return '\/';/);
-  assert.match(screen, /path\.startsWith\(PREVIEW_PATH_PREFIX\)/);
+});
+
+test('preview address chip hides the gateway prefix and access_token', () => {
+  assert.equal(previewDisplayPathFromPath(''), '/');
+  assert.equal(previewDisplayPathFromPath('/preview/'), '/');
+  assert.equal(
+    previewDisplayPathFromPath('/preview/?access_token=sit_EopBYgXXf5X2fz2kx1gl0U5BEtTEzf240kR7BWuzCLQ'),
+    '/',
+  );
+  assert.equal(
+    previewDisplayPathFromPath('/?access_token=sit_secret'),
+    '/',
+  );
+  assert.equal(
+    previewDisplayPathFromPath('/preview/about?q=docs&access_token=sit_secret#intro'),
+    '/about?q=docs#intro',
+  );
+  assert.equal(previewDisplayPathFromPath('/preview/blog/first-post'), '/blog/first-post');
 });
 
 // A listener is half a mirror. Asserting only that the parent subscribes let the

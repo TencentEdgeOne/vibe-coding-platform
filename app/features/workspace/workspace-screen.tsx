@@ -12,7 +12,6 @@ import {
   Laptop,
   RefreshCw,
   Rocket,
-  ScrollText,
   Smartphone,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -29,6 +28,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   appendNarrationChunk,
   dropTrailingSummaryEcho,
+  lastFinishedAssistant,
+  resolveDeployOffer,
 } from '@/app/lib/tool-activity';
 import { useFileContentCache } from '@/app/hooks/use-file-content-cache';
 import { useTypewriterPlaceholder } from '@/app/hooks/use-typewriter-placeholder';
@@ -40,7 +41,6 @@ import {
   clearCachedConversationId,
   createConversationId,
   createMessageId,
-  downloadTextFile,
   extractProjectName,
   getContactUrl,
   getOrCreateCachedConversationId,
@@ -51,9 +51,9 @@ import {
 } from '@/app/lib/conversation';
 import { LANGUAGE_STORAGE_KEY, TRANSLATIONS, type Locale } from '@/app/i18n';
 import { isMakersDeployUrl } from '../../../shared/makers-deploy';
+import { previewDisplayPathFromPath } from '../../../shared/preview-display-path';
 import { previewDeepLink } from '../../../shared/preview-link';
 import { STOPPED_TURN_REPLY } from '../../../shared/user-facing-reply';
-import { conversationExportFilename } from '../../../shared/conversation-export';
 import type { ModelOption } from '../../../shared/models';
 import type {
   AssistantActivity,
@@ -76,7 +76,6 @@ import { WorkspaceErrorBar } from './components/workspace-error-bar';
 import { consumeEventStream } from './sse';
 import {
   fetchChatTaskStream,
-  fetchConversationTranscript,
   fetchModelCatalog,
   fetchProjectArchive,
   fetchResumePreview,
@@ -124,20 +123,6 @@ const FilesPanel = dynamic(
 // preview inside the iframe.
 const PREVIEW_CREDENTIAL_REFRESH_MS = 8 * 60_000;
 const PREVIEW_REFRESH_POLL_MS = 60_000;
-
-// Sandbox port 9000 publishes generated applications under this fixed prefix.
-// The UI hides it so the address chip still represents the application route.
-const PREVIEW_PATH_PREFIX = '/preview/';
-
-// Render the mirrored pathname[+search][+hash] relative to the application root.
-// Root URLs from older persisted previews remain supported.
-function previewDisplayPathFromPath(path: string) {
-  if (!path) return '/';
-  const stripped = path.startsWith(PREVIEW_PATH_PREFIX)
-    ? path.slice(PREVIEW_PATH_PREFIX.length)
-    : path.replace(/^\/+/, '');
-  return stripped === '' ? '/' : `/${stripped}`;
-}
 
 function isSamePreviewTarget(a: string, b: string) {
   try {
@@ -201,6 +186,7 @@ export function WorkspaceScreen() {
   // Slow resume stage: snapshot restore + npm install + preview restart.
   const [workspaceRestoring, setWorkspaceRestoring] = useState(false);
   const [newProjectConfirmOpen, setNewProjectConfirmOpen] = useState(false);
+  const [dismissedDeployTurnId, setDismissedDeployTurnId] = useState('');
   const fileCache = useFileContentCache();
   const [activePreviewUrl, setActivePreviewUrl] = useState('');
   const [activePreviewRevision, setActivePreviewRevision] = useState(0);
@@ -290,13 +276,24 @@ export function WorkspaceScreen() {
   const deployHint = hasDeployableProject
     ? (canDeployProject ? t.deployLabel : t.workspace.deployNeedsIdle)
     : t.workspace.deployNeedsProject;
+  const deployOfferKind = resolveDeployOffer(messages, {
+    canDownload: hasDeployableProject,
+    loading: deployRunning || workspaceRestoring,
+    hasLiveDeployment: deployment?.status === 'success',
+  });
+  const deployOfferTurnId = lastFinishedAssistant(messages)?.id || '';
+  const deployOffer = deployOfferKind && deployOfferTurnId && deployOfferTurnId !== dismissedDeployTurnId
+    ? {
+      prompt: deployOfferKind === 'again'
+        ? t.workspace.deployOfferAgain
+        : t.workspace.deployOffer,
+      deploy: t.workspace.deployOfferAction,
+      dismiss: t.workspace.deployOfferDismiss,
+    }
+    : null;
   // The panel actions are icons, so the tooltip is the only thing that names
   // them, and it has to explain a refusal as well as the action.
   const downloadHint = downloadBusy ? t.workspace.downloading : t.workspace.downloadSource;
-  const canExportTranscript = Boolean(conversationId) && messages.length > 0;
-  const exportHint = canExportTranscript
-    ? t.workspace.exportTranscript
-    : t.workspace.exportTranscriptEmpty;
   // Address bar shows the preview's current route once the injected tracker
   // reports it; before that it falls back to a bare root path so the sandbox
   // host is never shown.
@@ -1476,22 +1473,6 @@ export function WorkspaceScreen() {
     }
   }, []);
 
-  async function handleExportTranscript() {
-    if (process.env.NODE_ENV !== 'development' || !conversationId) {
-      return;
-    }
-    try {
-      const response = await fetchConversationTranscript(conversationId);
-      if (!response.ok) {
-        return;
-      }
-      const jsonl = await response.text();
-      downloadTextFile(conversationExportFilename(conversationId), jsonl);
-    } catch {
-      // Dev-only export; a failed fetch should not interrupt the workspace.
-    }
-  }
-
   async function handleDownload() {
     if (!download?.url || downloadBusy) {
       return;
@@ -1533,6 +1514,9 @@ export function WorkspaceScreen() {
   function handleDeployProject() {
     if (!canDeployProject) {
       return;
+    }
+    if (deployOfferTurnId) {
+      setDismissedDeployTurnId(deployOfferTurnId);
     }
     void sendMessage(t.workspace.deployRequest, { intent: 'deploy' });
   }
@@ -1592,6 +1576,7 @@ export function WorkspaceScreen() {
     clearCachedConversationId();
     setConversationId(null);
     setMessages([]);
+    setDismissedDeployTurnId('');
     setLoading(false);
     setPreview(null);
     setDeployment(null);
@@ -1723,6 +1708,11 @@ export function WorkspaceScreen() {
           onInputChange={setInput}
           onSubmit={handleConversationSubmit}
           onStop={handleConversationStop}
+          deployOffer={deployOffer}
+          onDeployOffer={handleDeployProject}
+          onDismissDeployOffer={() => {
+            if (deployOfferTurnId) setDismissedDeployTurnId(deployOfferTurnId);
+          }}
         />}
 
         {/* ===== RIGHT: preview / files — mounts after the first written file ===== */}
@@ -1761,10 +1751,10 @@ export function WorkspaceScreen() {
             </div>
 
             <div className="workspace-topbar-actions">
-              {/* Taking the project somewhere else: out to the edge, out as a
-                  log, out as source. These belong to the project rather than to
-                  the preview, so they stay put across both tabs and through a
-                  refresh that has not produced a URL yet. */}
+              {/* Taking the project somewhere else: out to the edge, or out as
+                  source. These belong to the project rather than to the preview,
+                  so they stay put across both tabs and through a refresh that
+                  has not produced a URL yet. */}
               <div className="workspace-topbar-group">
                 {/* First and the only one carrying colour. A publish in flight
                     is the same refusal as having no project: the button stays
@@ -1781,18 +1771,6 @@ export function WorkspaceScreen() {
                 >
                   <Rocket className="size-3.5" />
                 </button>
-                {process.env.NODE_ENV === 'development' && (
-                  <button
-                    type="button"
-                    onClick={handleExportTranscript}
-                    disabled={!canExportTranscript}
-                    className="workspace-icon-button"
-                    aria-label={exportHint}
-                    data-tooltip={exportHint}
-                  >
-                    <ScrollText className="size-3.5" />
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={() => void handleDownload()}

@@ -4,7 +4,7 @@
 
 **框架：** Claude Agent SDK · **分类：** Coding · **语言：** TypeScript
 
-[![部署到 EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/makers/new?template=vibe-coding-agent&from=within&fromAgent=1&agentLang=typescript)
+[![部署到 EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/makers/new?template=vibe-coding-agent-platform&from=within&fromAgent=1&agentLang=typescript)
 
 ## 概览
 

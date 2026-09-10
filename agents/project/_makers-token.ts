@@ -99,6 +99,22 @@ export async function resolveSandboxMakersToken(
   return (await issueSandboxMakersSubToken(state, masterToken)).token;
 }
 
+/**
+ * The sandbox CLI's own wording names EDGEONE_PAGES_API_TOKEN and a browser
+ * login, neither of which the operator can do from this host. The missing
+ * thing is the runtime key that would have minted a tenant credential.
+ */
+export function describeMissingMakersRuntimeToken(output = '') {
+  if (!/not authenticated|browser login is unavailable|Please provide a token via/i.test(output)) {
+    return '';
+  }
+  return [
+    'Missing API_TOKEN in the Agent Runtime.',
+    'Live preview and deploy run `edgeone makers dev` inside the sandbox, which cannot open a browser login.',
+    'Add API_TOKEN to the project environment variables and restart.',
+  ].join(' ');
+}
+
 export function buildSandboxMakersEnv(sandboxToken = ''): Record<string, string> {
   return {
     PAGES_SOURCE: 'skills',

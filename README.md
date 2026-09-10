@@ -4,7 +4,7 @@
 
 **Framework:** Claude Agent SDK · **Category:** Coding · **Language:** TypeScript
 
-[![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/makers/new?template=vibe-coding-agent&from=within&fromAgent=1&agentLang=typescript)
+[![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/makers/new?template=vibe-coding-agent-platform&from=within&fromAgent=1&agentLang=typescript)
 
 ## Overview
 
